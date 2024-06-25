@@ -54,6 +54,8 @@
     <string name="btn_confirm">Xác nhận</string>
     <string name="error_not_be_empty">Chỗ này không được bỏ trống</string>
     <string name="error_password_more_chr">Mật khẩu phải >6 ký tự</string>
+    <string name="error_registration">Đăng ký thất bại. Vui lòng thử lại.</string>
+    <string name="error_age_requirement">Bạn phải ít nhất 16 tuổi để đăng ký</string>
 
     <!-- login -->
     <string name="text_password">Mật khẩu</string>

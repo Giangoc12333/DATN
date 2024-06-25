@@ -74,8 +74,6 @@ public class MoviesActivity extends AppCompatActivity   {
 
     private void getMovies(){
         Intent intent = getIntent();
-//        userId = getIntent().getIntExtra("userId", 0);
-//        userId = getIntent().getStringExtra("userId");
         String str = intent.getStringExtra("key");
         MovieService movieService = ApiService.createService(MovieService.class);
         Call<ApiResponse<List<Movie>>> call = null;
@@ -117,6 +115,11 @@ public class MoviesActivity extends AppCompatActivity   {
                 call = movieService.getHistoryMovies();
                 textView_top.setText("Danh sách phim đã xem");
                 break;
+
+            default:
+                call = movieService.getMoviesLatest();
+                textView_top.setText("Phim mới");
+
         }
 
         if (call != null) {

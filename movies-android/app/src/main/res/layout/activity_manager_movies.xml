@@ -42,15 +42,38 @@
             android:layout_marginBottom="20dp"
             android:background="@color/red_40" />
 
+        <!-- Search bar layout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <EditText
+                android:id="@+id/search_bar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Search"
+                android:padding="8dp"
+                android:background="@null"
+                android:textColor="@color/white_50"
+                android:textSize="16sp"/>
+
+            <ImageView
+                android:id="@+id/search_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_sharp_search_24"
+                android:layout_gravity="center"
+                android:padding="8dp" />
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_movies"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp"
-            />
-
-
-
+            android:padding="8dp" />
     </LinearLayout>
-
 </androidx.core.widget.NestedScrollView>

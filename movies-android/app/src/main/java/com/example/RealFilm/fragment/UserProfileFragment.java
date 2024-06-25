@@ -242,7 +242,6 @@ public class UserProfileFragment extends Fragment {
 //                progressDialog.dismiss();
 //                getActivity().finish();
 
-
                 progressDialog.setMessage("Đang đăng xuất, Vui lòng chờ...");
                 progressDialog.show();
                 FirebaseAuth.getInstance().signOut();
@@ -250,7 +249,7 @@ public class UserProfileFragment extends Fragment {
 
                 // Tạo Intent và truyền trạng thái checkbox
                 Intent intent = new Intent();
-                intent.putExtra("rememberLoginChecked", false);
+                intent.putExtra("checked", false);
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 progressDialog.dismiss();
                 getActivity().finish();

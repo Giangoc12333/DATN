@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -21,12 +20,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.RealFilm.R;
-import com.example.RealFilm.model.ApiResponse;
-import com.example.RealFilm.model.Movie;
-import com.example.RealFilm.model.User;
-import com.example.RealFilm.service.ApiService;
 import com.example.RealFilm.service.MovieService;
-import com.example.RealFilm.service.UserService;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -47,22 +41,9 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.http.Path;
-import wseemann.media.FFmpegMediaMetadataRetriever;
 
 
 public class WatchMoviesActivity extends AppCompatActivity {
@@ -365,44 +346,6 @@ public class WatchMoviesActivity extends AppCompatActivity {
         ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
         MediaSource mediaSource = new ExtractorMediaSource(
                 videoUri, dataSourceFactory, extractorsFactory, null, null);
-        // Tạo đối tượng UserService
-//        UserService userService = ApiService.createService(UserService.class);
-//
-//        // Gọi phương thức getId() để lấy thông tin người dùng
-//        Call<ApiResponse<User>> call = userService.getId();
-//
-//        // Thực hiện cuộc gọi và xử lý kết quả
-//        call.enqueue(new Callback<ApiResponse<User>>() {
-//            @Override
-//            public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
-//                if (response.isSuccessful()) {
-//                    // Lấy ID người dùng từ kết quả
-//                    User user = response.body().getData();
-//                    Integer userId = user.getId();
-//
-//                    // Tạo tên SharedPreferences dựa trên ID của người dùng
-//                    String sharedPreferencesName = "WatchMoviesActivity_" + userId;
-//
-//                    // Lấy trạng thái và thời gian hiện tại từ SharedPreferences
-//                    SharedPreferences sharedPreferences = getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE);
-//                    long currentPosition = sharedPreferences.getLong("current_position", 0);
-//                    boolean isPlaying = sharedPreferences.getBoolean("is_playing", true);
-//
-//                    // Thiết lập thời gian hiện tại và trạng thái của trình phát
-//                    exoPlayer.seekTo(currentPosition);
-//                    exoPlayer.setPlayWhenReady(isPlaying);
-//                    videoView.setPlayer(exoPlayer);
-//                    exoPlayer.prepare(mediaSource);
-//                } else {
-//                    // Xử lý khi có lỗi trong cuộc gọi
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
-//                // Xử lý khi gặp lỗi trong quá trình thực hiện cuộc gọi
-//            }
-//        });
 
         videoView.setPlayer(exoPlayer);
         exoPlayer.prepare(mediaSource);

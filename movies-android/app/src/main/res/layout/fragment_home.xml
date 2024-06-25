@@ -34,6 +34,7 @@
                     android:background="@drawable/radial" />
             </RelativeLayout>
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -194,17 +195,57 @@
                                 android:textColor="#ffff"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
                     </LinearLayout>
+
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/textViewRecommendedMoviesTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Phim Đề Cử"
+                android:textSize="18sp"
+                android:background="#000000"
+                android:textStyle="bold"
+                android:padding="8dp"
+                android:textColor="@color/white_50"
+                android:gravity="left" />
 
+            <HorizontalScrollView
+                android:id="@+id/recommendMoviesScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/recommendedMoviesListView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#000000"
+                        android:orientation="horizontal" />
+                </FrameLayout>
+
+            </HorizontalScrollView>
+
+
+            <!--             Đặt các thành phần UI khác vào đây-->
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/movieContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/radial"
+            android:background="#000000"
             android:orientation="vertical" />
-
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -2,6 +2,7 @@ package com.example.RealFilm.service;
 
 import com.example.RealFilm.BuildConfig;
 import com.example.RealFilm.MyApplication;
+import com.example.RealFilm.model.ApiResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -12,6 +13,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -45,11 +47,12 @@ public class ApiService {
                 .writeTimeout(90, TimeUnit.SECONDS)
                 .cache(null);
 
-        if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-            httpClient.addInterceptor(logging);
-        }
+//        if (BuildConfig.DEBUG) {
+//            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+//            logging.setLevel(HttpLoggingInterceptor.Level.BASIC); // Giảm mức độ log xuống BASIC hoặc NONE
+//            httpClient.addInterceptor(logging);
+//
+//        }
 
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()

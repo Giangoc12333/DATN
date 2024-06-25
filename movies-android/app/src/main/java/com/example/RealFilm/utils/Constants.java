@@ -7,6 +7,7 @@ public interface Constants {
     String MOVIE_COMMENT ="comment";
     String MOVIE_RATESTAR ="ratestar";
     String MOVIE_LATEST ="latest";
+    String MOVIE_ALL ="All";
     String MOVIE_GENRE ="genre";
     String MOVIE_COUNTRY ="country";
     String MOVIE_HISTORY ="history";

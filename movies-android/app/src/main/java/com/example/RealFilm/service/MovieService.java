@@ -57,6 +57,10 @@ public interface MovieService {
 
     );
 
+    @GET("movies/RecommendedMoviesFromHistory")
+    Call<ApiResponse<List<Movie>>>
+    getRecommendedMoviesFromHistory();
+
     @DELETE("movies/{movieId}")
     Call<ApiResponse>
     deleteMovie(@Path("movieId") Integer movieId);
@@ -90,6 +94,14 @@ public interface MovieService {
     @GET("movies/latest")
     Call<ApiResponse<List<Movie>>>
     getMoviesLatest();
+
+    @GET("movies/manager")
+    Call<ApiResponse<List<Movie>>>
+    getManagertMovies();
+
+    @GET("movies/home")
+    Call<ApiResponse<List<Movie>>>
+    getMoviesHome();
 
     @GET("movies/genre/{genreId}")
     Call<ApiResponse<List<Movie>>>

@@ -120,47 +120,47 @@ public class LoginActivity extends AppCompatActivity implements UserProfileFragm
         });
 
     }
-
-    private void rememberLogin() {
-        boolean checked = sharedPreferences.getBoolean("checked", false);
-
-        if (checked) {
-            String shared_email = sharedPreferences.getString("email", "");
-            String shared_password = sharedPreferences.getString("password", "");
-
-            if (!shared_email.isEmpty() && !shared_password.isEmpty()) {
-                Edittext_email.setText(shared_email);
-                Edittext_password.setText(shared_password);
-                CheckBox_rememberlogin.setChecked(true);
-                login(); // Thực hiện đăng nhập tự động
-            }
-        } else {
-            String shared_email = sharedPreferences.getString("email", "");
-            if (!shared_email.isEmpty()) {
-                Edittext_email.setText(shared_email);
-                CheckBox_rememberlogin.setChecked(false);
-            }
-        }
-    }
+//
 //    private void rememberLogin() {
-//        String shared_email = sharedPreferences.getString("email", "");
-//        String shared_password = sharedPreferences.getString("password", "");
 //        boolean checked = sharedPreferences.getBoolean("checked", false);
 //
 //        if (checked) {
-//            if (shared_email != "" && shared_password != "") {
+//            String shared_email = sharedPreferences.getString("email", "");
+//            String shared_password = sharedPreferences.getString("password", "");
+//
+//            if (!shared_email.isEmpty() && !shared_password.isEmpty()) {
 //                Edittext_email.setText(shared_email);
 //                Edittext_password.setText(shared_password);
 //                CheckBox_rememberlogin.setChecked(true);
+//                login(); // Thực hiện đăng nhập tự động
 //            }
 //        } else {
-//            if (shared_email != "" && shared_password != "") {
+//            String shared_email = sharedPreferences.getString("email", "");
+//            if (!shared_email.isEmpty()) {
 //                Edittext_email.setText(shared_email);
 //                CheckBox_rememberlogin.setChecked(false);
 //            }
 //        }
-//
 //    }
+    private void rememberLogin() {
+        String shared_email = sharedPreferences.getString("email", "");
+        String shared_password = sharedPreferences.getString("password", "");
+        boolean checked = sharedPreferences.getBoolean("checked", false);
+
+        if (checked) {
+            if (shared_email != "" && shared_password != "") {
+                Edittext_email.setText(shared_email);
+                Edittext_password.setText(shared_password);
+                CheckBox_rememberlogin.setChecked(true);
+            }
+        } else {
+            if (shared_email != "" && shared_password != "") {
+                Edittext_email.setText(shared_email);
+                CheckBox_rememberlogin.setChecked(false);
+            }
+        }
+
+    }
 
     public void btnLoginOnClick() {
         Btn_login.setOnClickListener(new View.OnClickListener() {

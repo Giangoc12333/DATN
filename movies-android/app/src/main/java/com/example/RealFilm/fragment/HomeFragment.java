@@ -12,10 +12,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -42,6 +46,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +58,9 @@ import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
 
-    private TextView textView_category, textView_new_movies, textView_nation, textView_category_movies_home, textView_name_movies_home;
+    private TextView textView_category, textView_new_movies, textView_nation, textView_category_movies_home, textView_name_movies_home,textViewRecommendedMoviesTitle;
     private Button btn_play;
+    private LinearLayout recommendedMoviesListView;
     private ImageView imageView_poster_home_3x4;
     private DatabaseReference mDatabase;
     private LinearLayout  btn_information_home, btn_trailer_home;
@@ -72,9 +78,7 @@ public class HomeFragment extends Fragment {
     private List<Movie> moviesLatest;
 
     private LinearLayout movieContainer;
-
     private String defaultGenre;
-
 
     public HomeFragment() {
         // Required empty public constructor
@@ -107,7 +111,8 @@ public class HomeFragment extends Fragment {
         textView_name_movies_home = rootView.findViewById(R.id.textView_name_movies_home);
         textView_new_movies = rootView.findViewById(R.id.textView_new_movies);
         imageView_poster_home_3x4 = rootView.findViewById(R.id.imageView_poster_home_3x4);
-
+        textViewRecommendedMoviesTitle = rootView.findViewById(R.id.textViewRecommendedMoviesTitle);
+        recommendedMoviesListView = rootView.findViewById(R.id.recommendedMoviesListView);
         btn_information_home = rootView.findViewById(R.id.btn_information_home);
         btn_trailer_home = rootView.findViewById(R.id.btn_trailer_home);
 
@@ -124,8 +129,31 @@ public class HomeFragment extends Fragment {
         getCountries();
         getGenres();
         getMoviesLatest();
+        getRecommendedMoviesFromHistory();
 
         return rootView;
+    }
+    private void getRecommendedMoviesFromHistory() {
+        MovieService movieService = ApiService.createService(MovieService.class);
+        Call<ApiResponse<List<Movie>>> call = movieService.getRecommendedMoviesFromHistory();
+        call.enqueue(new Callback<ApiResponse<List<Movie>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Movie>>> call, Response<ApiResponse<List<Movie>>> response) {
+                if (response.isSuccessful()) {
+                    List<Movie> recommendedMovies = response.body().getData();
+                    if (recommendedMovies != null && !recommendedMovies.isEmpty()){
+                        // Hiển thị danh sách phim đề cử
+                        showRecommendedMovies(recommendedMovies);
+                    }
+                } else {
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Movie>>> call, Throwable t) {
+                // Xử lý khi gặp lỗi trong quá trình gọi API
+            }
+        });
     }
 
     private  void btnTrailerOnClick(String trailer) {
@@ -147,9 +175,10 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void  getMoviesLatest () {
+
+    private void getMoviesLatest() {
         MovieService movieService = ApiService.createService(MovieService.class);
-        Call<ApiResponse<List<Movie>>> call = movieService.getMoviesLatest();
+        Call<ApiResponse<List<Movie>>> call = movieService.getMoviesHome() ;
         call.enqueue(new Callback<ApiResponse<List<Movie>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<Movie>>> call, Response<ApiResponse<List<Movie>>> response) {
@@ -157,32 +186,37 @@ public class HomeFragment extends Fragment {
                     List<Movie> movies = response.body().getData();
                     if (movies != null && !movies.isEmpty()) {
                         Object[] movieArray = movies.toArray();
-                        moviesLatest= movies;
-                        int randomIndex = (int)(Math.random() * (movieArray.length));
+                        moviesLatest = movies;
+                        int randomIndex = (int) (Math.random() * (movieArray.length));
                         Movie randomMovie = (Movie) movieArray[randomIndex];
                         String posterUrl = randomMovie.getPosterHorizontal();
 
-                        Glide.with(getActivity()).load(posterUrl).into(imageView_poster_home_3x4);
+                        // Kiểm tra xem fragment đã được gắn vào activity chưa trước khi sử dụng Glide
+                        if (isAdded() && getActivity() != null) {
+                            Glide.with(requireContext()) // Sử dụng requireContext() thay vì getActivity()
+                                    .load(posterUrl)
+                                    .into(imageView_poster_home_3x4);
+                        } else {
+                            // Xử lý khi fragment chưa được gắn vào activity hoặc activity null
+                            Log.e("HomeFragment", "Fragment not attached to activity or getActivity() returns null");
+                        }
                         textView_name_movies_home.setText(randomMovie.getTitle());
                         defaultGenre = (randomMovie.getGenre());
                         btnTrailerOnClick(randomMovie.getTrailerURL());
                         btnPlayOnClick(randomMovie.getId());
                         setDefaultGenreValue();
-
-                    } else {
-
                     }
+                } else {
+                    // Xử lý khi không có dữ liệu trả về từ API
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<List<Movie>>> call, Throwable t) {
-
+                // Xử lý khi gặp lỗi trong quá trình gọi API
             }
         });
     }
-
-
     public void getMovieListBySelectedGenre(String genreCode) {
         MovieService movieService = ApiService.createService(MovieService.class);
         Call<ApiResponse<List<Movie>>> call = movieService.getMoviesByGenre(genreCode);
@@ -192,9 +226,11 @@ public class HomeFragment extends Fragment {
                 if (response.isSuccessful()) {
                     List<Movie> movies = response.body().getData();
                     if (movies != null && !movies.isEmpty()) {
-                        showMoviesByGenre(genreCode, movies);
+                        // Limiting to first 5 movies if available
+                        int limit = Math.min(5, movies.size());
+                        List<Movie> limitedMovies = movies.subList(0, limit);
+                        showMoviesByGenre(genreCode, limitedMovies);
                     }
-
                 } else {
                 }
             }
@@ -205,6 +241,69 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
+    private void showRecommendedMovies(List<Movie> recommendedMovies) {
+
+        LinearLayout genreMoviesLayout = recommendedMoviesListView.findViewById(R.id.recommendedMoviesListView);
+
+
+        for (Movie movie : recommendedMovies) {
+            String movieName = movie.getTitle();
+            String posterUrl = movie.getPosterVertical();
+            LinearLayout parent = new LinearLayout(getActivity());
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, dpToPx(10), dpToPx(20), 0);
+            parent.setLayoutParams(params);
+            parent.setOrientation(LinearLayout.VERTICAL);
+            parent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), MoviesInformationActivity.class);
+                    intent.putExtra("id", movie.getId());
+                    startActivity(intent);
+                }
+            });
+
+            CardView cardView1 = new CardView(getActivity());
+            cardView1.setLayoutParams(new CardView.LayoutParams(dpToPx(165), dpToPx(220)));
+            cardView1.setRadius(dpToPx(15));
+            cardView1.setCardBackgroundColor(getResources().getColor(R.color.white));
+
+            CardView.LayoutParams params3 = new CardView.LayoutParams(dpToPx(160), dpToPx(215), Gravity.CENTER);
+            CardView cardView2 = new CardView(getActivity());
+            cardView2.setLayoutParams(params3);
+            cardView2.setRadius(dpToPx(15));
+
+            ImageView imageView = new ImageView(getActivity());
+            imageView.setId((int) 1);
+            Glide.with(getActivity()).load(posterUrl).into(imageView);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            imageView.setBackgroundResource(R.drawable.null_image34);
+
+            LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(45));
+            params2.setMargins(0, dpToPx(10), 0, 0);
+            TextView textView = new TextView(getActivity());
+            textView.setLayoutParams(params2);
+            textView.setText(movieName);
+            textView.setTextSize(18);
+            textView.setMaxLines(2);
+            textView.setEllipsize(TextUtils.TruncateAt.END);
+            textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            textView.setTextColor(getResources().getColor(R.color.white));
+
+
+            parent.addView(cardView1);
+            cardView1.addView(cardView2);
+            cardView2.addView(imageView);
+            parent.addView(textView);
+
+            genreMoviesLayout.addView(parent);
+        }
+
+
+    }
+
 
     private void showMoviesByGenre(String genreCode, List<Movie> movies) {
         View genreView = movieContainer.findViewWithTag(genreCode);
@@ -271,7 +370,6 @@ public class HomeFragment extends Fragment {
         }
 
     }
-
     private void getCountries() {
         CommonService commonService = ApiService.createService(CommonService.class);
         Call<ApiResponse<List<Country>>> call = commonService.getCountries();
@@ -353,8 +451,10 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
     private void addGenreView(String genreName, String genreCode) {
+        if (getActivity() == null) {
+            return; // Nếu getActivity() trả về null, không làm gì cả và thoát khỏi phương thức
+        }
         View genreView = LayoutInflater.from(getActivity()).inflate(R.layout.item_category, null);
         genreView.setTag(genreCode);
 
@@ -371,8 +471,14 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        movieContainer.addView(genreView);
+        if (movieContainer != null) {
+            movieContainer.addView(genreView);
+        } else {
+            // Nếu movieContainer null, bạn có thể gọi log hoặc xử lý lỗi tùy theo yêu cầu của ứng dụng
+            Log.e("HomeFragment", "movieContainer is null");
+        }
     }
+
 
 
     private void sendData(String value, String id, String headerTitle) {
@@ -387,7 +493,7 @@ public class HomeFragment extends Fragment {
         textView_new_movies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendData(Constants.MOVIE_LATEST, null, null);
+                sendData(Constants.MOVIE_ALL, null, null);
             }
         });
 
