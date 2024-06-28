@@ -14,7 +14,6 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sharedPreferences = getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE);
-
     }
 
     public static SharedPreferences getSharedPreferences() {
@@ -26,7 +25,12 @@ public class MyApplication extends Application {
         editor.putString(Constants.ACCESS_TOKEN, token);
         editor.apply();
     }
+    public static void ClearToken() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constants.ACCESS_TOKEN, "");
+        editor.apply();
 
+    }
     public static String getToken() {
         return sharedPreferences.getString(Constants.ACCESS_TOKEN, null);
     }

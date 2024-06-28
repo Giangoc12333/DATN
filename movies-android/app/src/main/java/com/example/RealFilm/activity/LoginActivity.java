@@ -17,8 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.RealFilm.MyApplication;
 import com.example.RealFilm.R;
-//import com.example.RealFilm.fragment.ChangePasswordFragment;
-import com.example.RealFilm.fragment.UserProfileFragment;
 import com.example.RealFilm.model.ApiResponse;
 import com.example.RealFilm.model.Status;
 import com.example.RealFilm.model.User;
@@ -31,11 +29,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity implements UserProfileFragment.OnLogoutClickListener{
+public class LoginActivity extends AppCompatActivity {
 
     private EditText Edittext_email, Edittext_password;
     private TextInputLayout Tiplayout_login_email, Tiplayout_login_password;
-    private TextView Tv_register,Tv_reset;
+    private TextView Tv_register;
     private Button Btn_login;
     private ProgressDialog progressDialog;
     private SharedPreferences sharedPreferences;
@@ -49,31 +47,17 @@ public class LoginActivity extends AppCompatActivity implements UserProfileFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        UserProfileFragment userProfileFragment = new UserProfileFragment();
-        userProfileFragment.setOnLogoutClickListener(this);
         initUi();
         initListener();
         rememberLogin();
-
     }
-    @Override
-    public void onLogoutClick() {
-        CheckBox checkBoxRememberLogin = findViewById(R.id.checkBox_rememberlogin);
-        checkBoxRememberLogin.setChecked(false);
-
-        // Xử lý các tác vụ khác khi đăng xuất
-        // ...
-    }
-
 
     private void initUi() {
         Tv_register = findViewById(R.id.tv_register);
-        Tv_reset = findViewById(R.id.Tv_reset);
+
         Edittext_email = findViewById(R.id.edittext_login_email);
         Edittext_password = findViewById(R.id.edittext_login_password);
         Btn_login = findViewById(R.id.btn_login);
-
 
         Tiplayout_login_email = findViewById(R.id.tiplayout_login_email);
         Tiplayout_login_password = findViewById(R.id.tiplayout_login_password);
@@ -96,14 +80,6 @@ public class LoginActivity extends AppCompatActivity implements UserProfileFragm
             }
         });
 
-        Tv_reset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i1 = new Intent(LoginActivity.this, ResetPassword1Activity.class);
-                startActivity(i1);
-            }
-        });
-
         btnLoginOnClick();
 
         CheckBox_rememberlogin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -120,28 +96,7 @@ public class LoginActivity extends AppCompatActivity implements UserProfileFragm
         });
 
     }
-//
-//    private void rememberLogin() {
-//        boolean checked = sharedPreferences.getBoolean("checked", false);
-//
-//        if (checked) {
-//            String shared_email = sharedPreferences.getString("email", "");
-//            String shared_password = sharedPreferences.getString("password", "");
-//
-//            if (!shared_email.isEmpty() && !shared_password.isEmpty()) {
-//                Edittext_email.setText(shared_email);
-//                Edittext_password.setText(shared_password);
-//                CheckBox_rememberlogin.setChecked(true);
-//                login(); // Thực hiện đăng nhập tự động
-//            }
-//        } else {
-//            String shared_email = sharedPreferences.getString("email", "");
-//            if (!shared_email.isEmpty()) {
-//                Edittext_email.setText(shared_email);
-//                CheckBox_rememberlogin.setChecked(false);
-//            }
-//        }
-//    }
+
     private void rememberLogin() {
         String shared_email = sharedPreferences.getString("email", "");
         String shared_password = sharedPreferences.getString("password", "");
@@ -231,6 +186,4 @@ public class LoginActivity extends AppCompatActivity implements UserProfileFragm
             editor.commit();
         }
     }
-
-
 }

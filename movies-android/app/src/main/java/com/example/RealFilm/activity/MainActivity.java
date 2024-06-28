@@ -31,10 +31,6 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(new HomeFragment());
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-//        badge = bottomNavigationView.getOrCreateBadge(R.id.profile);
-//        badge.setNumber(9);
-//        badge.setBackgroundColor(getResources().getColor(R.color.red));
-//        badge.setBadgeTextColor(getResources().getColor(R.color.white));
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
 

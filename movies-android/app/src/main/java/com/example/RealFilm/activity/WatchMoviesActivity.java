@@ -1,6 +1,5 @@
 package com.example.RealFilm.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -45,7 +44,6 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import java.util.Locale;
 
 
-
 public class WatchMoviesActivity extends AppCompatActivity {
     private SimpleExoPlayerView videoView;
     private SeekBar seekBar_video, seek_volume;
@@ -65,10 +63,10 @@ public class WatchMoviesActivity extends AppCompatActivity {
         super.onPause();
 
         // Lưu trạng thái và thời gian hiện tại vào SharedPreferences cho người dùng hiện tại
-        SharedPreferences sharedPreferences = getSharedPreferences("WatchMoviesActivity", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("WatchMoviesActivity_" + userId, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong("current_position_" + userId, exoPlayer.getCurrentPosition());
-        editor.putBoolean("is_playing_" + userId, exoPlayer.getPlayWhenReady());
+        editor.putLong("current_position", exoPlayer.getCurrentPosition());
+        editor.putBoolean("is_playing", exoPlayer.getPlayWhenReady());
         editor.apply();
     }
 
@@ -77,9 +75,9 @@ public class WatchMoviesActivity extends AppCompatActivity {
         super.onResume();
 
         // Khôi phục trạng thái và thời gian hiện tại từ SharedPreferences cho người dùng hiện tại
-        SharedPreferences sharedPreferences = getSharedPreferences("WatchMoviesActivity", Context.MODE_PRIVATE);
-        long currentPosition = sharedPreferences.getLong("current_position_" + userId, 0);
-        boolean isPlaying = sharedPreferences.getBoolean("is_playing_" + userId, true);
+        SharedPreferences sharedPreferences = getSharedPreferences("WatchMoviesActivity_" + userId, Context.MODE_PRIVATE);
+        long currentPosition = sharedPreferences.getLong("current_position", 0);
+        boolean isPlaying = sharedPreferences.getBoolean("is_playing", true);
 
         // Thiết lập thời gian hiện tại và trạng thái của trình phát
         exoPlayer.seekTo(currentPosition);
@@ -350,7 +348,6 @@ public class WatchMoviesActivity extends AppCompatActivity {
         videoView.setPlayer(exoPlayer);
         exoPlayer.prepare(mediaSource);
     }
-
 
 
 

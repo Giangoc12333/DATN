@@ -243,10 +243,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void showRecommendedMovies(List<Movie> recommendedMovies) {
-
+        if (getActivity() == null) return;
         LinearLayout genreMoviesLayout = recommendedMoviesListView.findViewById(R.id.recommendedMoviesListView);
-
-
         for (Movie movie : recommendedMovies) {
             String movieName = movie.getTitle();
             String posterUrl = movie.getPosterVertical();
@@ -263,7 +261,6 @@ public class HomeFragment extends Fragment {
                     startActivity(intent);
                 }
             });
-
             CardView cardView1 = new CardView(getActivity());
             cardView1.setLayoutParams(new CardView.LayoutParams(dpToPx(165), dpToPx(220)));
             cardView1.setRadius(dpToPx(15));

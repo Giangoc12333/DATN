@@ -128,57 +128,142 @@ public class MoviesInformationActivity extends AppCompatActivity {
         imageView_poser_4x3 = findViewById(R.id.imageView_poser_4x3);
     }
 
-    private void btnFavouriteOnClick() {
-        btn_favourite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("LOGS" , hasLiked + "");
+//    private void btnFavouriteOnClick() {
+//        btn_favourite.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d("LOGS" , hasLiked + "");
+//
+//                MovieService movieService = ApiService.createService(MovieService.class);
+//                if (hasLiked == true) {
+//                    Call<ApiResponse> call = movieService.removeFavorite(movieId);
+//                    call.enqueue(new Callback<ApiResponse>() {
+//                        @Override
+//                        public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+//                            if (response.isSuccessful()) {
+//                                if (response.body().getStatus() == Status.SUCCESS) {
+//                                    Toast.makeText(MoviesInformationActivity.this, "Xoá yêu thích thành công", Toast.LENGTH_SHORT).show();
+//                                    disliked();
+//
+//                                }
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<ApiResponse> call, Throwable t) {
+//
+//                        }
+//                    });
+//                    return;
+//
+//                }
+//                else {
+//                    Call<ApiResponse> call = movieService.addFavorite(movieId);
+//                    call.enqueue(new Callback<ApiResponse>() {
+//                        @Override
+//                        public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+//                            if (response.isSuccessful()) {
+//                                if (response.body().getStatus() == Status.SUCCESS) {
+//                                    Toast.makeText(MoviesInformationActivity.this, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
+//                                    liked();
+//
+//                                }
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<ApiResponse> call, Throwable t) {
+//
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//    }
+private void btnFavouriteOnClick() {
+    btn_favourite.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            try {
+                Log.d("LOGS", "Current hasLiked state: " + hasLiked);
 
                 MovieService movieService = ApiService.createService(MovieService.class);
-                if (hasLiked == true) {
-                    Call<ApiResponse> call = movieService.removeFavorite(movieId);
-                    call.enqueue(new Callback<ApiResponse>() {
-                        @Override
-                        public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
-                            if (response.isSuccessful()) {
-                                if (response.body().getStatus() == Status.SUCCESS) {
-                                    Toast.makeText(MoviesInformationActivity.this, "Xoá yêu thích thành công", Toast.LENGTH_SHORT).show();
-                                    disliked();
-
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ApiResponse> call, Throwable t) {
-
-                        }
-                    });
-
-                    return;
+                if (hasLiked) {
+                    removeFavorite(movieService);
                 } else {
-                    Call<ApiResponse> call = movieService.addFavorite(movieId);
-                    call.enqueue(new Callback<ApiResponse>() {
-                        @Override
-                        public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
-                            if (response.isSuccessful()) {
-                                if (response.body().getStatus() == Status.SUCCESS) {
-                                    Toast.makeText(MoviesInformationActivity.this, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
-                                    liked();
-
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ApiResponse> call, Throwable t) {
-
-                        }
-                    });
+                    addFavorite(movieService);
                 }
+            } catch (Exception e) {
+                Log.e("ERROR", "Unexpected error", e);
+                Toast.makeText(MoviesInformationActivity.this, "Đã xảy ra lỗi không mong muốn", Toast.LENGTH_SHORT).show();
+            }
+        }
+    });
+}
+
+    private void removeFavorite(MovieService movieService) {
+        Call<ApiResponse> call = movieService.removeFavorite(movieId);
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        if (response.body().getStatus() == Status.SUCCESS) {
+                            Toast.makeText(MoviesInformationActivity.this, "Xóa khỏi danh sách yêu thích thành công", Toast.LENGTH_SHORT).show();
+                            disliked();
+                            hasLiked = false;
+                        } else {
+                            Toast.makeText(MoviesInformationActivity.this, "Xóa khỏi danh sách yêu thích thất bại", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(MoviesInformationActivity.this, "Phản hồi không thành công", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e("ERROR", "Error processing response", e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                Log.e("ERROR", "Request failed", t);
+                Toast.makeText(MoviesInformationActivity.this, "Yêu cầu thất bại", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    private void addFavorite(MovieService movieService) {
+        Call<ApiResponse> call = movieService.addFavorite(movieId);
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        if (response.body().getStatus() == Status.SUCCESS) {
+                            Toast.makeText(MoviesInformationActivity.this, "Thêm vào danh sách yêu thích thành công", Toast.LENGTH_SHORT).show();
+                            liked();
+                            hasLiked = true;
+                        } else {
+                            Toast.makeText(MoviesInformationActivity.this, "Thêm vào danh sách yêu thích thất bại", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(MoviesInformationActivity.this, "Phản hồi không thành công", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e("ERROR", "Error processing response", e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                Log.e("ERROR", "Request failed", t);
+                Toast.makeText(MoviesInformationActivity.this, "Yêu cầu thất bại", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+
     public void btnTrailerOnClick(String url) {
         btn_trailer.setOnClickListener(new View.OnClickListener() {
             @Override

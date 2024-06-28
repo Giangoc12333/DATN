@@ -42,9 +42,9 @@ public class ApiService {
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
-                .readTimeout(90, TimeUnit.SECONDS)
-                .connectTimeout(90, TimeUnit.SECONDS)
-                .writeTimeout(90, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .cache(null);
 
 //        if (BuildConfig.DEBUG) {

@@ -46,8 +46,6 @@ public class UserProfileFragment extends Fragment {
     private Button Btn_logout;
     private CardView list_favourite, list_comments, list_stars, list_history,Tv_change_password;
     private TextView Tv_user_name, Tv_user_id, Tv_user_email, Tv_user_birthday, Tv_user_joindate;
-    private DatabaseReference mDatabase;
-    private FirebaseUser user;
     private String email, name, birthday, joindate;
     private String userId;
     private ImageView Btn_change_information, imageView;
@@ -199,8 +197,7 @@ public class UserProfileFragment extends Fragment {
                     User user = res.getData();
 
                     name= user.getName();
-                    userId = user.getId() + "";
-//                    userId = user.getId();
+                    userId = user.getId()+"";
                     email = user.getEmail();
                     birthday = user.getBirthday();
                     joindate= user.getCreatedAt().toString();
@@ -223,39 +220,21 @@ public class UserProfileFragment extends Fragment {
         });
     }
 
-    public void onClickLogoutBtn(){
-        Btn_logout.setOnClickListener(new View.OnClickListener(){
+    public void onClickLogoutBtn() {
+        Btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                progressDialog.setMessage("Đang đăng xuất, Vui lòng chờ...");
-//                progressDialog.show();
-//                FirebaseAuth.getInstance().signOut();
-//                Toast.makeText(getActivity(), "Đăng xuất thành công!", Toast.LENGTH_LONG).show();
-//
-//                if (logoutClickListener != null) {
-//                    logoutClickListener.onLogoutClick();
-//                }
-//
-//                progressDialog.dismiss();
-//                Intent i1 = new Intent(getActivity(), LoginActivity.class);
-//                startActivity(i1);
-//                progressDialog.dismiss();
-//                getActivity().finish();
-
                 progressDialog.setMessage("Đang đăng xuất, Vui lòng chờ...");
                 progressDialog.show();
                 FirebaseAuth.getInstance().signOut();
-                Toast.makeText(getActivity(), "Đăng xuất thành công!", Toast.LENGTH_LONG).show();
 
-                // Tạo Intent và truyền trạng thái checkbox
-                Intent intent = new Intent();
-                intent.putExtra("checked", false);
-                getActivity().setResult(Activity.RESULT_OK, intent);
+                Toast.makeText(getActivity(), "Đăng xuất thành công!", Toast.LENGTH_LONG).show();
+                Intent i1 = new Intent(getActivity(), LoginActivity.class);
+                startActivity(i1);
                 progressDialog.dismiss();
                 getActivity().finish();
 
             }
         });
     }
-
 }
